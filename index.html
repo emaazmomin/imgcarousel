@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Carousel</title>
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <style>
+      .main {
+        position: relative;
+      }
+      .carousel-container {
+        overflow: hidden;
+      }
+
+      .carousel {
+        display: flex;
+      }
+
+      .prev-btn {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+      }
+
+      .next-btn {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+      }
+      .img-div {
+        border-radius: 20px;
+        min-width: 100%;
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 1s ease-in-out;
+      }
+      .img-div:nth-child(odd) {
+        background: linear-gradient(rgb(41, 71, 71), rgb(238, 236, 236));
+      }
+      .img-div:nth-child(even) {
+        background: linear-gradient(rgb(133, 104, 249), rgb(228, 225, 241));
+      }
+      .visualHide {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="carousel-container" id="cc-div">
+        <div class="carousel">
+          <div class="img-div slide">
+            <h1>First</h1>
+          </div>
+          <div class="img-div slide">
+            <h1>Second</h1>
+          </div>
+          <div class="img-div slide">
+            <h1>Third</h1>
+          </div>
+          <div class="img-div slide">
+            <h1>Fourth</h1>
+          </div>
+        </div>
+        <div class="prev-btn" onclick="changeSlide(-1)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="46"
+            height="46"
+            fill="currentColor"
+            class="bi bi-chevron-left"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"
+            />
+          </svg>
+        </div>
+        <div class="next-btn" onclick="changeSlide(1)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="46"
+            height="46"
+            fill="currentColor"
+            class="bi bi-chevron-right"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let slides = document.querySelectorAll(".slide");
+      let index = 0;
+      let touchStart = 0;
+      let touchEnd = 0;
+      let touch = false;
+      function changeSlide(num) {
+        index = num + index;
+        console.log(index);
+        if (index >= slides.length) {
+          index = 0;
+        }
+        if (index < 0) {
+          index = index + slides.length;
+        }
+        for (let i = 0; i < slides.length; i++) {
+          i != index
+            ? (slides[i].style.display = "none")
+            : (slides[i].style.display = "flex");
+        }
+        touch = true;
+        if (touch) {
+          setTimeout(() => {
+            touch = false;
+          }, 3000);
+        }
+      }
+      let sliderBody = document.getElementById("cc-div");
+      sliderBody.addEventListener("touchstart", (e) => {
+        console.log(e.changedTouches[0].screenX);
+        touchStart = e.changedTouches[0].screenX;
+      });
+      sliderBody.addEventListener("touchend", (e) => {
+        console.log(e.changedTouches[0].screenX);
+        touchEnd = e.changedTouches[0].screenX;
+        if (touchStart < touchEnd) {
+          changeSlide(-1);
+        } else {
+          changeSlide(1);
+        }
+      });
+      function autochange() {
+        if (!touch) {
+          setInterval(() => {
+            changeSlide(1);
+          }, 3000);
+        }
+      }
+      autochange();
+    </script>
+    <script>
+      //   let slideIndex = 0;
+
+      //   function showSlide(index) {
+      //     const slides = document.querySelectorAll(".slide");
+      //     const numSlides = slides.length;
+
+      //     if (index < 0) {
+      //       index = numSlides - 1;
+      //     } else if (index >= numSlides) {
+      //       index = 0;
+      //     }
+
+      //     slides.forEach((slide, i) => {
+      //       slide.style.display = i === index ? "flex" : "none";
+      //     });
+
+      //     slideIndex = index;
+      //   }
+
+      //   function changeSlide(n) {
+      //     console.log(slideIndex+n);
+      //     showSlide(slideIndex + n);
+      //   }
+
+      //   function handleGesture() {
+      //     if (touchendX < touchstartX) {
+      //       changeSlide(1); // Swipe left, show next slide
+      //     }
+      //     if (touchendX > touchstartX) {
+      //       changeSlide(-1); // Swipe right, show previous slide
+      //     }
+      //   }
+
+      //   document.addEventListener("touchstart", (e) => {
+      //     touchstartX = e.changedTouches[0].screenX;
+      //     console.log(e.changedTouches[0].screenX)
+      //   });
+
+      //   document.addEventListener("touchend", (e) => {
+      //     touchendX = e.changedTouches[0].screenX;
+      //     console.log(e.changedTouches[0].screenX)
+      //     handleGesture();
+      //   });
+      //   // Automatic carousel (optional)
+      //   function autoSlide() {
+      //     changeSlide(1);
+      //     setTimeout(autoSlide, 3000); // Change slide every 3 seconds
+      //   }
+
+      //   autoSlide(); // Uncomment this line to enable automatic sliding
+    </script>
+  </body>
+</html>
